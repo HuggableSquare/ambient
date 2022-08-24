@@ -1,0 +1,14 @@
+{
+  "name": "ambient",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@suldashi/ogg": "^1.2.9",
+    "express": "^4.18.1",
+    "flac-bindings": "^2.7.2",
+    "music-metadata": "^7.12.4",
+    "readdirp": "^3.6.0"
+  }
+}

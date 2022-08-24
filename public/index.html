@@ -1,0 +1,215 @@
+<title>ambient</title>
+
+<audio id="atc" preload="none" src="http://d.liveatc.net/katl_twr" type="audio/mp3"></audio>
+<audio id="music" preload="none" src="/stream"></audio>
+
+<main>
+  <div class="controls">
+    <button id="play" class="paused" onclick="playPause()"></button>
+    <input id="volume" type="range" min="0" max="100" step="1" value="75" oninput="volume(this.value)" onchange="volume(this.value)"></input>
+  </div>
+  <div id="np"></div>
+</main>
+
+<video id="bg" preload="true" autoplay loop muted>
+  <source src="2015-01-03-station.mp4" type="video/mp4">
+</video>
+
+<script>
+  const urls = {};
+  document.querySelectorAll('audio').forEach((e) => urls[e.id] = e.src);
+
+  let paused = true;
+  function playPause() {
+    paused = !paused;
+    document.querySelectorAll('audio').forEach((e) => paused ? e.src = '' : ((e.src = urls[e.id]) && e.play()));
+    document.querySelector('button').classList.toggle('paused');
+  }
+  function volume(val) {
+    document.getElementById('music').volume = (val / 100) * 0.3;
+    document.getElementById('atc').volume = val / 100;
+  }
+  document.body.onkeyup = ({ keyCode }) => keyCode === 32 && playPause();
+
+  volume(document.getElementById('volume').value);
+
+  const sse = new EventSource('/np');
+  sse.addEventListener('message', ({ data }) => {
+    document.getElementById('np').innerHTML = `<img src="/art?${Date.now()}">${data}`;
+    document.title = `${data} | ambient`;
+  });
+  sse.addEventListener('error', console.log);
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    font-size: 20pt;
+    font-family: monospace;
+  }
+
+  video#bg {
+    position: fixed;
+    width: auto;
+    min-width: 100%;
+    height: auto;
+    min-height: 100%;
+    z-index: -100;
+    background-size: cover;
+  }
+
+  main {
+    margin: auto;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2em;
+    text-align: center;
+  }
+
+  #np {
+    margin-top: 1em;
+    display: flex;
+    align-items: center;
+  }
+
+  img {
+    height: 2rem;
+    margin-right: 0.75rem;
+    margin-left: -0.5rem;
+    border-radius: 100%;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+  }
+
+  input {
+    flex: 1;
+    margin-left: 1rem;
+  }
+
+  button#play {
+    border: 0;
+    background: transparent;
+    box-sizing: border-box;
+    width: 0;
+
+    height: 1rem;
+    padding: 0;
+
+    border-color: transparent transparent transparent white;
+    transition: 100ms all ease;
+    cursor: pointer;
+
+    border-style: double;
+    border-width: 0 0 0 0.9rem;
+  }
+
+  button#play.paused {
+    border-style: solid;
+    border-width: 0.5rem 0 0.5rem 0.9rem;
+  }
+
+  button#play:hover {
+    border-color: transparent transparent transparent white;
+  }
+
+  button#play:focus {
+    outline: none;
+  }
+</style>
+
+<style>
+  input[type=range] {
+    -webkit-appearance: none;
+    height: 4px;
+  }
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    background: #ffffff;
+    border-radius: 0px;
+    border: 0px solid #010101;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    border: 0px solid rgba(0, 0, 0, 0);
+    height: 11px;
+    width: 15px;
+    border-radius: 0px;
+    background: #ffffff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -3.5px;
+  }
+  input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ffffff;
+  }
+  input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    background: #ffffff;
+    border-radius: 0px;
+    border: 0px solid #010101;
+  }
+  input[type=range]::-moz-range-thumb {
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    border: 0px solid rgba(0, 0, 0, 0);
+    height: 11px;
+    width: 15px;
+    border-radius: 0px;
+    background: #ffffff;
+    cursor: pointer;
+  }
+  input[type=range]::-moz-focus-outer {
+    border: 0;
+  }
+  input[type=range]::-ms-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+  input[type=range]::-ms-fill-lower {
+    background: #ffffff;
+    border: 0px solid #010101;
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+  }
+  input[type=range]::-ms-fill-upper {
+    background: #ffffff;
+    border: 0px solid #010101;
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+  }
+  input[type=range]::-ms-thumb {
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
+    border: 0px solid rgba(0, 0, 0, 0);
+    height: 11px;
+    width: 15px;
+    border-radius: 0px;
+    background: #ffffff;
+    cursor: pointer;
+    height: 4px;
+  }
+  input[type=range]:focus::-ms-fill-lower {
+    background: #ffffff;
+  }
+  input[type=range]:focus::-ms-fill-upper {
+    background: #ffffff;
+  }
+</style>
