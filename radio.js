@@ -24,9 +24,6 @@ export default class Radio extends EventEmitter {
     random.path = `${path}/${random.path}`;
     const metadata = await parseFile(random.path);
 
-    console.log(metadata.common.artist, metadata.common.title)
-    console.log(metadata.format)
-
     this.current = { file: random, metadata };
     this.emit('song', this.current);
 
