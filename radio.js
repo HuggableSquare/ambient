@@ -18,7 +18,7 @@ export default class Radio extends EventEmitter {
   }
 
   async playSong() {
-    const path = 'music/test';
+    const path = 'music';
     const files = await readdirp.promise(path, { fileFilter: '*.flac' });
     const random = files[Math.floor(Math.random() * files.length)];
     random.path = `${path}/${random.path}`;
